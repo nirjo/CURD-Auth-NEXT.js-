@@ -15,11 +15,11 @@ import {
 export default function Home() {
   const [ID, setID] = useState(null);
   const [name, setName] = useState("");
-  const [age, setAge] = useState(null);
+  const [age, setAge] = useState("");
   const [fireData, setFireData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
-   const databaseRef = collection(database,'CURD Data');
+  const databaseRef = collection(database, 'CRUD DATA');
   let router = Router;
 
 
@@ -66,14 +66,15 @@ const getID = (id, name, age) => {
   setIsUpdate(true)
 }
 const updateFields = () => {
-  let fieldToEdit = doc(database, 'CRUD Data', ID);
+  let fieldToEdit = doc(database, 'CRUD DATA', ID);
   updateDoc(fieldToEdit, {
     name: name,
     age: Number(age)
   })
   .then(() => {
     alert('Data Updated')
-    
+    setName('')
+    setAge(null)
   })
   .catch((err) => {
     console.log(err);
