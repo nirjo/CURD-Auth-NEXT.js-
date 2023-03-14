@@ -92,14 +92,33 @@ export default function Home() {
         alert("Cannot Delete that field..");
       });
   };
+
+
+const LogOut =()=>{
+  sessionStorage.removeItem("token")
+  router.push('/register')
+
+}
+
+
+
+
+
   return (
     <div className={styles.container}>
+
+
       <Head>
-        <title>Create Next App</title>
+        <title>NEXT CURD APP</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
+      <div>
+        <button className={styles.button}
+        onClick={LogOut}
+        >LogOut</button>
+      </div>
         <h1 className={styles.title}>Home</h1>
 
         <input
