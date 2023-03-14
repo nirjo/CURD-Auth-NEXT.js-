@@ -6,7 +6,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@firebase/auth": "^0.21.4",
+    "firebase": "^9.17.2",
     "next": "latest",
+    "next-routes": "^1.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }
