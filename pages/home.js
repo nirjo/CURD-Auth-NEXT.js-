@@ -96,7 +96,7 @@ export default function Home() {
 
 const LogOut =()=>{
   sessionStorage.removeItem("token")
-  router.push('/register')
+  router.push('/login')
 
 }
 
