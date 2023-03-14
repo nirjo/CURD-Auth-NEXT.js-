@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { app,database } from "../firebaseConfig";
+import { app, database } from "../firebaseConfig";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import {
@@ -19,67 +19,79 @@ export default function Home() {
   const [fireData, setFireData] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const databaseRef = collection(database, 'CRUD DATA');
+  const databaseRef = collection(database, "CRUD DATA");
   let router = Router;
 
-
   useEffect(() => {
-    let token = sessionStorage.getItem('Token')
+    let token = sessionStorage.getItem("Token");
     if (token) {
-      getData()  
-      }
-    if (!token) {
-      router.push('/register')
+      getData();
     }
-  }, [])
+    if (!token) {
+      router.push("/register");
+    }
+  }, []);
 
- const addData = () =>{
-  addDoc(databaseRef, {
-    name: name,
-    age: Number(age)
-  })
-   .then(()=>{
-    alert('Data sent')
-    getData()
-    setName('')
-    setAge(null)
-   })
-   .catch(()=>{
-    console.log('Error')
-   })
+  const addData = () => {
+    addDoc(databaseRef, {
+      name: name,
+      age: Number(age),
+    })
+      .then(() => {
+        alert("Data sent");
+        getData();
+        setName("");
+        setAge(null);
+      })
+      .catch(() => {
+        console.log("Error");
+      });
+  };
 
- }
+  const getData = () => {
+    getDocs(databaseRef).then((response) => {
+      setFireData(
+        response.docs.map((data) => {
+          return { ...data.data(), id: data.id };
+        })
+      );
+    });
+  };
 
-const getData =()=>{
-  getDocs(databaseRef)
-  .then((response)=>{
-    setFireData(response.docs.map((data)=>{
-      return {...data.data(),id:data.id}
-    }))
-  })
-}
+  const getID = (id, name, age) => {
+    setID(id);
+    setName(name);
+    setAge(age);
+    setIsUpdate(true);
+  };
+  const updateFields = () => {
+    let fieldToEdit = doc(database, "CRUD DATA", ID);
+    updateDoc(fieldToEdit, {
+      name: name,
+      age: Number(age),
+    })
+      .then(() => {
+        alert("Data Updated");
+        setName("");
+        setAge(null);
+        setIsUpdate(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-const getID = (id, name, age) => {
-  setID(id)
-  setName(name)
-  setAge(age)
-  setIsUpdate(true)
-}
-const updateFields = () => {
-  let fieldToEdit = doc(database, 'CRUD DATA', ID);
-  updateDoc(fieldToEdit, {
-    name: name,
-    age: Number(age)
-  })
-  .then(() => {
-    alert('Data Updated')
-    setName('')
-    setAge(null)
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-}
+  const deleteDocument = (id) => {
+    let fieldToEdit = doc(database, "CRUD Data", id);
+    deleteDoc(fieldToEdit)
+      .then(() => {
+        alert("Data Deleted");
+        getData();
+      })
+      .catch((err) => {
+        alert("Cannot Delete that field..");
+      });
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -95,46 +107,46 @@ const updateFields = () => {
           placeholder="name"
           type="text"
           value={name}
-          onChange ={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
         />
         <input
           className={styles.inputBox}
           placeholder="age"
           type="number"
           value={age}
-          onChange ={event => setAge(event.target.value)}
-
+          onChange={(event) => setAge(event.target.value)}
         />
-      
-      {isUpdate ? (
-          <button
-            className={styles.button}
-            onClick={updateFields}
-          >
+
+        {isUpdate ? (
+          <button className={styles.button} onClick={updateFields}>
             UPDATE
           </button>
         ) : (
-          <button
-            className={styles.button}
-            onClick={addData}
-          >
+          <button className={styles.button} onClick={addData}>
             ADD
           </button>
         )}
 
-
         <div>
-          {fireData.map((data)=>{
+          {fireData.map((data) => {
             return (
               <div key={data.id} className={styles.flex}>
-              <h2>{data.name}</h2>
-              <p>{data.age}</p>
-              <button className={styles.button}
-               onClick={()=>getID(data.id,data.name, data.age )}
-              >update</button>
+                <h2>{data.name}</h2>
+                <p>{data.age}</p>
+                <button
+                  className={styles.button}
+                  onClick={() => getID(data.id, data.name, data.age)}
+                >
+                  UPDATE
+                </button>
+                <button
+                  className={styles.button}
+                  onClick={() => deleteDocument(data.id)}
+                >
+                  DELETE
+                </button>
               </div>
-            )
-
+            );
           })}
         </div>
       </main>
